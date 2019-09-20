@@ -5,6 +5,7 @@ import './Game.css';
 
 const NUM_DICE = 5;
 const NUM_ROLLS = 3;
+let count = 1;
 
 class Game extends Component {
   constructor(props) {
@@ -34,8 +35,11 @@ class Game extends Component {
     this.toggleLocked = this.toggleLocked.bind(this);
   }
 
+  
   roll(evt) {
     // roll dice whose indexes are in reroll
+    console.log('this.state.rollsLeft => ', this.state.rollsLeft);
+    if (this.state.rollsLeft < 1) return
     this.setState(st => ({
       dice: st.dice.map(
         (d, i) => st.locked[i] ? d : Math.ceil(Math.random() * 6)),
@@ -57,15 +61,18 @@ class Game extends Component {
 
   doScore(rulename, ruleFn) {
     // evaluate this ruleFn with the dice and score this rulename
+    console.log("before state change", this.state.rollsLeft)
     this.setState(st => ({
       scores: { ...st.scores, [rulename]: ruleFn(this.state.dice) },
       rollsLeft: NUM_ROLLS,
       locked: Array(NUM_DICE).fill(false),
     }));
     this.roll();
+    console.log("after state change, and roll", this.state.rollsLeft)
   }
 
   render() {
+    console.log(this.state)
     return (
       <section>
         <Dice dice={this.state.dice} locked={this.state.locked} toggleLocked={this.toggleLocked} />

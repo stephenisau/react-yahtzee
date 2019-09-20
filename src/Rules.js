@@ -65,7 +65,8 @@ class FullHouse extends Rule {
     const d = new Set(dice);
     const freq = this.freq(dice)
     //fullhouse must have 3 matches of one number and 2 matches of another number
-    return ((freq[0] === 3 && freq[1] === 2) || (freq[1] === 3 && freq[0] === 2)) ? this.score : 0;
+    const isFullHouse = (freq[0] === 3 && freq[1] === 2) || (freq[1] === 3 && freq[0] === 2);
+    return (isFullHouse) ? this.score : 0;
   }
 }
 
@@ -73,9 +74,16 @@ class FullHouse extends Rule {
 
 class SmallStraight extends Rule {
   evalRoll(dice) {
-    const d = new Set(dice);
-    //small must have 4 different dice: must include 3 && 4
-    return (d.size === 4 || 5) && (d.has(3) && d.has(4)) && ((d.has(1) && d.has(2)) || (d.has(5) && d.has(6)) || (d.has(2) && d.has(5))) ? this.score : 0;
+    let toSet = [];
+    const d = dice.sort();
+
+    for(let i =0; i < d.length; i++) {
+      if (d[i+1] - d[i] === 1) {
+        toSet.push(d[i], d[i+1])
+      }
+    }
+    let diceSet = new Set(toSet)
+    return diceSet.size >=4 ? this.score : 0;
   }
 }
 
